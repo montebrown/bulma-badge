@@ -1,7 +1,20 @@
+@use "bulma/sass/utilities" as utils
+
+// external overridable bulma variables
+$colors: utils.$colors !default
+$scheme-main: utils.$scheme-main !default
+$primary: utils.$primary !default
+$white: utils.$white !default
+
+// extension variables
 $badge-font-size: .65rem !default
 $badge-height: 14px !default
 $badge-padding: .05rem .15rem !default
 $badge-shadow: 0 0 0 2px $scheme-main !default
+
+// internal variables
+$color: null
+$color-invert: null
 
 =badge-positions
     &.is-left
@@ -87,8 +100,12 @@ $badge-shadow: 0 0 0 2px $scheme-main !default
     +badge-positions
 
     @each $name, $pair in $colors
-        $color: nth($pair, 1)
-        $color-invert: nth($pair, 2)
+        @if type-of($pair != "list") 
+          $color: $pair !global
+          $color-invert: utils.bulmaFindColorInvert($pair) !global
+        @else
+          $color: nth($pair, 1) !global
+          $color-invert: nth($pair, 2) !global
         
         &.is-#{$name}
             &:not(.is-outlined)
